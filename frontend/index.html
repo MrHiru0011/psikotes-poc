@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psikotes Retail - Indomaret</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧠 Psikotes Retail Indonesia</h1>
+            <p class="subtitle">Assessment System - Real Test</p>
+        </header>
+
+        <form id="testForm">
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📋 Bagian 1: Kepribadian (5 Soal)</div>
+                <div id="personality-questions"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🧮 Bagian 2: Penalaran Logis (5 Soal)</div>
+                <div id="reasoning-questions"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔷 Bagian 3: Spasial & Pattern (2 Soal)</div>
+                <div id="spatial-questions"></div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-submit">📤 Submit Test</button>
+                <button type="reset" class="btn-reset">🔄 Clear All</button>
+            </div>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing hasil Anda...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="result-title">📊 Hasil Psikotes Anda</div>
+            <div id="result-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+  </html>
