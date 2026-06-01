@@ -10,8 +10,16 @@
     <div class="container">
         <header>
             <h1>🧠 Psikotes Retail Indonesia</h1>
-            <p class="subtitle">Assessment System - Real Test</p>
+            <p class="subtitle">Assessment System - Soal Generate Dinamis 🎲</p>
+            <button type="button" class="btn-new-test" onclick="startNewTest()" style="margin-top: 15px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px;">
+                ✨ Mulai Test Baru (Soal Acak!)
+            </button>
         </header>
+
+        <div style="text-align: center; margin: 20px 0; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+            <p style="color: #0369a1; font-weight: 600;">💡 Setiap kali test, soal-soalnya berbeda!</p>
+            <p style="color: #0369a1; font-size: 14px; margin-top: 5px;">Tap "Mulai Test Baru" untuk generate soal baru 🎲</p>
+        </div>
 
         <form id="testForm">
             <div class="progress">
@@ -50,6 +58,19 @@
         </div>
     </div>
 
+    <style>
+        @keyframes slideInRight {
+            from { 
+                transform: translateX(400px); 
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(0); 
+                opacity: 1;
+            }
+        }
+    </style>
+
     <script src="script.js"></script>
 </body>
-  </html>
+</html>
