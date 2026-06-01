@@ -1,18 +1,48 @@
-// URL Backend (ganti nanti saat deploy)
-const API_URL = 'http://localhost:5000';
+// URL Backend
+const API_URL = 'http://localhost:5000'; // Ganti saat deploy
 
 let QUESTIONS = {};
+let CURRENT_TEST_ID = null;
 
-async function loadQuestions() {
+// ===== START NEW TEST =====
+async function startNewTest() {
     try {
-        const response = await fetch(`${API_URL}/api/questions`);
-        if (!response.ok) throw new Error('Backend tidak respond');
-        QUESTIONS = await response.json();
+        document.getElementById('loading').style.display = 'block';
+        
+        const response = await fetch(`${API_URL}/api/start-test`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error('Start test gagal');
+        
+        const data = await response.json();
+        CURRENT_TEST_ID = data.test_id;
+        QUESTIONS = data.questions;
+        
+        console.log('✅ Test baru dimulai! ID:', CURRENT_TEST_ID);
+        
+        // Clear form dan render questions baru
+        document.getElementById('testForm').reset();
         renderQuestions();
+        
+        // Hide result, show form
+        document.getElementById('result').classList.remove('show');
+        document.getElementById('testForm').style.display = 'block';
+        
         updateProgress();
+        
+        // Scroll ke atas
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Show success message
+        showNotification('🎉 ' + data.message, 'success');
+        
     } catch (err) {
         console.error('Error:', err);
-        alert('⚠️ Tidak bisa load soal. Pastikan backend sudah jalan!');
+        showNotification('❌ ' + err.message, 'error');
+    } finally {
+        document.getElementById('loading').style.display = 'none';
     }
 }
 
@@ -53,8 +83,14 @@ function updateProgress() {
     document.querySelector('.progress-bar').style.width = percentage + '%';
 }
 
+// ===== FORM SUBMISSION =====
 document.getElementById('testForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    if (!CURRENT_TEST_ID) {
+        alert('⚠️ Test belum di-start! Tap "Mulai Test Baru" dulu.');
+        return;
+    }
     
     const formData = new FormData(e.target);
     const answers = [];
@@ -84,7 +120,10 @@ document.getElementById('testForm').addEventListener('submit', async (e) => {
         const response = await fetch(`${API_URL}/api/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answers })
+            body: JSON.stringify({ 
+                test_id: CURRENT_TEST_ID,
+                answers: answers 
+            })
         });
 
         if (!response.ok) throw new Error('Submit gagal');
@@ -121,15 +160,44 @@ function displayResult(result) {
 
         <div class="result-card" style="margin-top: 15px; border-left-color: #999;">
             <p><small>⏰ Test selesai: ${new Date(result.timestamp).toLocaleString('id-ID')}</small></p>
+            <p><small>Test ID: ${result.test_id}</small></p>
+        </div>
+
+        <div class="button-group" style="margin-top: 20px;">
+            <button type="button" class="btn-submit" onclick="startNewTest()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: white;">
+                🔄 Mulai Test Baru (Soal Berbeda!)
+            </button>
         </div>
     `;
 
     contentDiv.innerHTML = html;
     resultDiv.classList.add('show');
+    document.getElementById('testForm').style.display = 'none';
+    
     setTimeout(() => {
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
 }
 
-// Load questions saat page load
-loadQuestions();
+function showNotification(message, type) {
+    const notif = document.createElement('div');
+    notif.textContent = message;
+    notif.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        border-radius: 8px;
+        z-index: 1000;
+        animation: slideInRight 0.3s ease;
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
+
+// Initial page load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('✅ Frontend ready. Tap "Mulai Test Baru" untuk start!');
+});
